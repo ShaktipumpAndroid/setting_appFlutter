@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          if (isLoading) const Center(child: CircularProgressIndicator(),) else Container(
+          isLoading? const Center(child: CircularProgressIndicator(),) : Container(
             padding:
                 EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.5),
             child: Column(
