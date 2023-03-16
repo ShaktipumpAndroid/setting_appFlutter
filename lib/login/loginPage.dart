@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:setting_app/home_page/HomePage.dart';
 import 'package:setting_app/ui_widget/robotoTextWidget.dart';
 
 import '../Utility/colors.dart';
 import '../Utility/string.dart';
-
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -48,8 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          isLoading?const Center(child: CircularProgressIndicator(),)
-              :Container(
+          if (isLoading) const Center(child: CircularProgressIndicator(),) else Container(
             padding:
                 EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.5),
             child: Column(
@@ -57,7 +56,8 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   margin: const EdgeInsets.only(left: 35, right: 35),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
                         height: 70,
@@ -94,24 +94,35 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextWidget(pumpcode),
-                      Container(
-                        margin: const EdgeInsets.all(25),
-                        child: Center(
-                            child: SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                            child: Text(submit, style: const TextStyle(fontSize: 18)),
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(12), // <-- Radius
-                              ),
-                            ),
-                          ),
-                        )),
+
+                      SizedBox(
+                        height: 15,
                       ),
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                        child:InkWell(
+                          child: Container(
+                              height: 50,
+                              width:  double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColors.blue,
+                                borderRadius: BorderRadius.all(Radius.circular(50)),
+                              ),
+                              child: Center(
+                                child: robotoTextWidget(textval: submit, colorval: AppColors.white, sizeval: 20, fontWeight: FontWeight.w400),
+                              )
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const HomePage()),
+                            );
+                            print("Click event on Submit");
+                          },
+                        ),
+
+                      )
                     ],
                   ),
                 ),
@@ -142,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               robotoTextWidget(textval: text, colorval: AppColors.black, sizeval: 14, fontWeight: FontWeight.w400),
-
             ],
           ),
         ),
