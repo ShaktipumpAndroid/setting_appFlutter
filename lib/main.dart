@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:setting_app/login/Login.dart';
+import 'package:setting_app/login/loginPage.dart';
 
 
 void main() {
@@ -14,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -50,7 +53,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  late Timer _timer;
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +84,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void checkLoginStatus() {
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _timer = Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-              builder: (BuildContext context) => const Login()),
-              (Route<dynamic> route) => false);
+            MaterialPageRoute(
+                builder: (BuildContext context) => const LoginPage()),
+                (Route<dynamic> route) => false);
+
     });
 
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
 

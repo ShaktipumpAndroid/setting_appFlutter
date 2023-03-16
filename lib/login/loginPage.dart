@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:setting_app/ui_widget/robotoTextWidget.dart';
 
 import '../Utility/colors.dart';
 import '../Utility/string.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
 
   var isLoading = false;
   @override
@@ -75,9 +76,8 @@ class _LoginState extends State<Login> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(openscanner,
-                                    style: const TextStyle(fontSize: 16),
-                                    textAlign: TextAlign.left),
+                                robotoTextWidget(textval: openscanner, colorval: AppColors.black, sizeval: 14, fontWeight: FontWeight.w400),
+
                                 IconButton(
                                     padding: EdgeInsets.zero,
                                     icon: const Icon(
@@ -141,8 +141,8 @@ class _LoginState extends State<Login> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(text,
-                  style: const TextStyle(fontSize: 16), textAlign: TextAlign.left),
+              robotoTextWidget(textval: text, colorval: AppColors.black, sizeval: 14, fontWeight: FontWeight.w400),
+
             ],
           ),
         ),
