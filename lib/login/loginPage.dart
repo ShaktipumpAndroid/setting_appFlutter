@@ -1,11 +1,16 @@
+import 'dart:convert' as convert;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:setting_app/home_page/HomePage.dart';
+import 'package:setting_app/login/model/PumpCodeModel.dart';
 import 'package:setting_app/ui_widget/robotoTextWidget.dart';
+import 'package:setting_app/utility/string.dart';
+import 'package:setting_app/web_service/HTTP.dart' as HTTP;
 
 import '../Utility/colors.dart';
-import '../Utility/string.dart';
+import '../web_service/APIDirectory.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -14,8 +19,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   var isLoading = false;
+  var pumpCode = pumpCodeTxt;
+  var openScanner = openScannerTxt;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -34,8 +41,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 340,
             decoration: const BoxDecoration(
               color: AppColors.blue,
-              borderRadius:
-                  BorderRadius.only(bottomLeft: Radius.circular(100)),
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100)),
             ),
             child: Container(
               margin: const EdgeInsets.only(top: 30),
@@ -48,87 +54,99 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          isLoading? const Center(child: CircularProgressIndicator(),) : Container(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.5),
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 35, right: 35),
+          isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.5),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
-                        height: 70,
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(5),
-                        child: Card(
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              color: Colors.grey.shade500,
-                            ),
-                            borderRadius: const BorderRadius.all(Radius.circular(12)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                robotoTextWidget(textval: openscanner, colorval: AppColors.black, sizeval: 14, fontWeight: FontWeight.w400),
-
-                                IconButton(
-                                    padding: EdgeInsets.zero,
-                                    icon: const Icon(
-                                      Icons.camera_alt,
-                                      color: AppColors.black,
-                                      size: 25,
-                                    ),
-                                    onPressed: () {
-                                      scanQRCode();
-                                    })
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      TextWidget(pumpcode),
-
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                        child:InkWell(
-                          child: Container(
-                              height: 50,
-                              width:  double.infinity,
-                              decoration: BoxDecoration(
-                                color: AppColors.blue,
-                                borderRadius: BorderRadius.all(Radius.circular(50)),
+                        margin: const EdgeInsets.only(left: 35, right: 35),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              height: 70,
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(5),
+                              child: Card(
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      robotoTextWidget(
+                                          textval: openScanner,
+                                          colorval: AppColors.black,
+                                          sizeval: 14,
+                                          fontWeight: FontWeight.w400),
+                                      IconButton(
+                                          padding: EdgeInsets.zero,
+                                          icon: const Icon(
+                                            Icons.camera_alt,
+                                            color: AppColors.black,
+                                            size: 25,
+                                          ),
+                                          onPressed: () {
+                                            scanQRCode();
+                                          })
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: Center(
-                                child: robotoTextWidget(textval: submit, colorval: AppColors.white, sizeval: 20, fontWeight: FontWeight.w400),
-                              )
-                          ),
-                          onTap: () {
-                            Navigator.push(
+                            ),
+                            TextWidget(pumpCode),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Material(
+                              elevation: 10,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(50)),
+                              child: InkWell(
+                                child: Container(
+                                    height: 50,
+                                    width: double.infinity,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.blue,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(50)),
+                                    ),
+                                    child: Center(
+                                      child: robotoTextWidget(
+                                          textval: submit,
+                                          colorval: AppColors.white,
+                                          sizeval: 20,
+                                          fontWeight: FontWeight.w400),
+                                    )),
+                                onTap: () {
+                                  /*Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const HomePage()),
-                            );
-                            print("Click event on Submit");
-                          },
+                            );*/
+                                  print("Click event on Submit");
+                                },
+                              ),
+                            )
+                          ],
                         ),
-
-                      )
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -152,7 +170,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              robotoTextWidget(textval: text, colorval: AppColors.black, sizeval: 14, fontWeight: FontWeight.w400),
+              robotoTextWidget(
+                  textval: pumpCode,
+                  colorval: AppColors.black,
+                  sizeval: 14,
+                  fontWeight: FontWeight.w400),
             ],
           ),
         ),
@@ -166,16 +188,27 @@ class _LoginPageState extends State<LoginPage> {
           '#ff6666', 'Cancel', true, ScanMode.QR);
 
       if (!mounted) return;
-      if (qrCode != null && !qrCode.isEmpty && qrCode.toString()!="-1") {
+      if (qrCode != null && !qrCode.isEmpty && qrCode.toString() != "-1") {
         setState(() {
-          openscanner = qrCode;
+          openScanner = qrCode;
           isLoading = true;
+          retrievePumpCode();
         });
       }
-      print("QRCode_Result====>$isLoading");
-
     } on PlatformException {
-      openscanner = 'Failed to scan QR Code.';
+      openScanner = 'Failed to scan QR Code.';
+    }
+  }
+
+  void retrievePumpCode() async {
+    dynamic response = await HTTP.get(context, userLogin(openScanner));
+    if (response != null && response.statusCode == 200) {
+      isLoading = false;
+      var jsonData = convert.jsonDecode(response.body);
+      PumpCodeModel pumpCodeModel = PumpCodeModel.fromJson(jsonData);
+      setState(() {
+        pumpCode = pumpCodeModel.response.materialNumber.toString();
+      });
     }
   }
 }
