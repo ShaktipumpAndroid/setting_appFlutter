@@ -50,11 +50,6 @@ Future<Object?> get(BuildContext context,url, [headers]) async {
   } catch (e) {
     throw ExceptionHandlers().getExceptionString(e);
   }
-  // catch (error) {
-  //   print('Something went wrong in HTTP Get $error');
-
-  //   throw error;
-  // }
 }
 
 Future<Object?> post(BuildContext context,url, data, [headers]) async {

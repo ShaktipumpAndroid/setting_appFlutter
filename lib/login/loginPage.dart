@@ -3,12 +3,14 @@ import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
 import 'package:setting_app/login/model/PumpCodeModel.dart';
 import 'package:setting_app/ui_widget/robotoTextWidget.dart';
 import 'package:setting_app/utility/string.dart';
 import 'package:setting_app/web_service/HTTP.dart' as HTTP;
 
 import '../Utility/colors.dart';
+import '../home_page/HomePage.dart';
 import '../web_service/APIDirectory.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   var isLoading = false;
+  var isloader = false;
   var pumpCode = pumpCodeTxt;
   var openScanner = openScannerTxt;
 
@@ -112,35 +115,53 @@ class _LoginPageState extends State<LoginPage> {
                             const SizedBox(
                               height: 15,
                             ),
-                            Material(
-                              elevation: 10,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(50)),
-                              child: InkWell(
+
+                            Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  //set border radius more than 50% of height and width to make circle
+                                ),
                                 child: Container(
-                                    height: 50,
                                     width: double.infinity,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.blue,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(50)),
-                                    ),
-                                    child: Center(
-                                      child: robotoTextWidget(
+                                    height: 50,
+
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.blue,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0)
+                                          )),
+
+                                      onPressed: () {
+                                        setState(() {
+                                          isloader = true;
+
+                                        });
+                                        Future.delayed(
+                                            const Duration(seconds: 3), () {
+                                          setState(() {
+                                            isloader = false;
+                                          });
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                                        });
+                                      },
+                                      child: isloader
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: const [
+                                                CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                ),
+                                              ],
+                                            )
+                                          :   robotoTextWidget(
                                           textval: submit,
                                           colorval: AppColors.white,
-                                          sizeval: 20,
+                                          sizeval: 14,
                                           fontWeight: FontWeight.w400),
-                                    )),
-                                onTap: () {
-                                  /*Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HomePage()),
-                            );*/
-                                  print("Click event on Submit");
-                                },
-                              ),
-                            )
+                                    )))
                           ],
                         ),
                       ),
@@ -192,6 +213,8 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           openScanner = qrCode;
           isLoading = true;
+          print("isLoading");
+          print(isLoading);
           retrievePumpCode();
         });
       }
