@@ -9,6 +9,8 @@ import 'package:setting_app/utility/string.dart';
 import 'package:setting_app/web_service/HTTP.dart' as HTTP;
 
 import '../Utility/colors.dart';
+import '../home_page/HomePage.dart';
+import '../utility/utils.dart';
 import '../web_service/APIDirectory.dart';
 
 class LoginPage extends StatefulWidget {
@@ -133,11 +135,16 @@ class _LoginPageState extends State<LoginPage> {
                                           fontWeight: FontWeight.w400),
                                     )),
                                 onTap: () {
-                                  /*Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HomePage()),
-                            );*/
-                                  print("Click event on Submit");
+                                  if(pumpCode.isNotEmpty && pumpCode!= pumpCodeTxt) {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage(
+                                              pumpCode: pumpCode,
+                                            )),
+                                            (route) => false);
+                                  }else{
+                                    showToast(ScanSerialNumberFirst);
+                                  }
                                 },
                               ),
                             )

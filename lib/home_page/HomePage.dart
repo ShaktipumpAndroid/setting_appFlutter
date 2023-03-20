@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:setting_app/home_page/HomePageListItem.dart';
 import 'package:setting_app/ui_widget/appbar.dart';
 
 import '../utility/string.dart';
 
 
+
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+
+  String pumpCode;
+   HomePage({Key? key,required this.pumpCode}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,10 +29,12 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement build
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-           AppBarWidget(pagetitle: appName,)
-        ],
-      ),
+      body:  Stack(alignment: Alignment.centerRight, children: <Widget>[
+
+        HomePageListItem(pumpCode: widget.pumpCode)
+
+
+       // HomePageListItem(pumpCode: widget.pumpCode)
+      ])
     );
   }}
