@@ -3,6 +3,7 @@ import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:setting_app/login/model/PumpCodeModel.dart';
 import 'package:setting_app/ui_widget/robotoTextWidget.dart';
@@ -143,7 +144,16 @@ class _LoginPageState extends State<LoginPage> {
                                           setState(() {
                                             isloader = false;
                                           });
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+
+                                          if(pumpCode.isNotEmpty && openScanner.isNotEmpty )
+                                            {
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) =>  HomePage( pumpcode: pumpCode)));
+                                            }
+                                          else
+                                            {
+                                              showToast("Field is empty");
+                                            }
+
                                         });
                                       },
                                       child: isloader
@@ -222,7 +232,6 @@ class _LoginPageState extends State<LoginPage> {
       openScanner = 'Failed to scan QR Code.';
     }
   }
-
   void retrievePumpCode() async {
     dynamic response = await HTTP.get(context, userLogin(openScanner));
     if (response != null && response.statusCode == 200) {
@@ -230,8 +239,20 @@ class _LoginPageState extends State<LoginPage> {
       var jsonData = convert.jsonDecode(response.body);
       PumpCodeModel pumpCodeModel = PumpCodeModel.fromJson(jsonData);
       setState(() {
+
         pumpCode = pumpCodeModel.response.materialNumber.toString();
       });
     }
+  }
+  void showToast(String text) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.redAccent,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 }

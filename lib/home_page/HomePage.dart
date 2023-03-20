@@ -1,27 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:setting_app/login/model/ParameterListModel.dart';
 import 'package:setting_app/ui_widget/appbar.dart';
 import '../Utility/colors.dart';
 import '../ui_widget/robotoTextWidget.dart';
 import '../utility/string.dart';
+import 'package:setting_app/web_service/HTTP.dart' as HTTP;
+import '../web_service/APIDirectory.dart';
+
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+    String pumpcode;
+   HomePage({Key? key ,required this.pumpcode}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
   var isLoading = false;
-  String inputValue = "Work hard";
-  List<String> _textFields = List.generate(20, (index) => 'hello') ;
+  final List<String> _textFields = List.generate(20, (index) => '') ;
+  List<Response> parameterArraylist = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _textFields[0]="Well Done";
   }
 
 
@@ -35,7 +42,7 @@ class _HomePageState extends State<HomePage> {
           AppBarWidget(
             pagetitle: appName,
           ),
-          Container(
+          isLoading?Center(child: CircularProgressIndicator(),): Container(
             padding:
                 EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.07),
 
@@ -51,7 +58,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  cardWidget(int index) {
+  Widget cardWidget(int index) {
     return Container(
       height: 100,
       width: double.infinity,
@@ -110,15 +117,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  editWidget(int key) {
+  editWidget(int index) {
     return Container(
       margin: const EdgeInsets.all(6),
       width: 150,
       height: 50,
       child: TextFormField(
-        initialValue:  _textFields[key],
+        initialValue: "" ,
         decoration: InputDecoration(
-          hintText: hint,
+          hintText:    "",
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(width: 1, color: Colors.grey), //<-- SEE HERE
             borderRadius: BorderRadius.circular(5),
@@ -132,7 +139,7 @@ class _HomePageState extends State<HomePage> {
         },
         onChanged: (value) {
           // Handle input changes
-          onUpdate(key,value);
+          onUpdate(index,value);
         },
         onSaved: (newValue) {
           // Handle the saved input value
@@ -146,5 +153,16 @@ class _HomePageState extends State<HomePage> {
 
     print( _textFields[key] = value);
 
+
   }
+
+  void retrievePumpCodeList() async {
+    dynamic response = await HTTP.get(context, listDetails(widget.pumpcode));
+    if (response != null && response.statusCode == 200) {
+      
+      parameterArraylist = (jsonDecode(response.body)['response'] as List).map((i) => Response.fromJson(i)).toList();
+
+    }
+  }
+
 }

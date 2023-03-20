@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:setting_app/Utility/colors.dart';
 import 'package:setting_app/ui_widget/robotoTextWidget.dart';
-import 'package:setting_app/utility/utils.dart';
-
 
 class AppBarWidget extends StatefulWidget {
   final String pagetitle;
@@ -36,6 +34,18 @@ class _AppBarInsidePageState extends State<AppBarWidget> {
         elevation: 10.0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
         automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.bluetooth,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // do something
+
+            },
+          )
+        ],
       ), //AppBar//Center
      //Scaffold
     );
